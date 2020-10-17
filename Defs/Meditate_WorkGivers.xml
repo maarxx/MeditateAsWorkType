@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <!-- ============= Meditate ============= -->
+  
+  <WorkGiverDef>
+    <defName>Meditate</defName>
+    <label>meditate</label>
+    <giverClass>MeditateAsWorkType.WorkGiver_Meditate</giverClass>
+    <workType>Meditate</workType>
+    <verb>meditate</verb>
+    <gerund>meditating</gerund>
+  </WorkGiverDef>
+
+</Defs>

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <WorkTypeDef>
+    <defName>Meditate</defName>
+    <labelShort>Meditate</labelShort>
+    <pawnLabel>Meditate</pawnLabel>
+    <gerundLabel>meditating</gerundLabel>
+    <description>Meditate for psyfocus.</description>
+    <verb>Meditating</verb>
+    <naturalPriority>335</naturalPriority>
+  </WorkTypeDef>
+
+</Defs>
