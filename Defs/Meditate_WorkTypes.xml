@@ -2,13 +2,23 @@
 <Defs>
 
   <WorkTypeDef>
-    <defName>Meditate</defName>
-    <labelShort>Meditate</labelShort>
+    <defName>MeditateForPsyfocus</defName>
+    <labelShort>Meditate (P)</labelShort>
     <pawnLabel>Meditate</pawnLabel>
     <gerundLabel>meditating</gerundLabel>
     <description>Meditate for psyfocus.</description>
     <verb>Meditating</verb>
-    <naturalPriority>335</naturalPriority>
+    <naturalPriority>90</naturalPriority>
+  </WorkTypeDef>
+  
+  <WorkTypeDef>
+    <defName>MeditateForAnima</defName>
+    <labelShort>Meditate (A)</labelShort>
+    <pawnLabel>Meditate</pawnLabel>
+    <gerundLabel>meditating</gerundLabel>
+    <description>Meditate for anima grass.</description>
+    <verb>Meditating</verb>
+    <naturalPriority>80</naturalPriority>
   </WorkTypeDef>
 
 </Defs>

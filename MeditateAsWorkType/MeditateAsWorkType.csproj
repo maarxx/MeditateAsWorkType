@@ -322,7 +322,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Patches.cs" />
-    <Compile Include="WorkGiver_Meditate.cs" />
+    <Compile Include="WorkGiver_MeditateForAnima.cs" />
+    <Compile Include="WorkGiver_MeditateForPsyfocus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -9,7 +9,7 @@ using Verse.AI;
 
 namespace MeditateAsWorkType
 {
-    public class WorkGiver_Meditate : WorkGiver
+    public class WorkGiver_MeditateForPsyfocus : WorkGiver
     {
         public override Job NonScanJob(Pawn pawn)
         {
