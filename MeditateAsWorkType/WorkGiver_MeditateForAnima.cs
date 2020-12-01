@@ -38,13 +38,16 @@ namespace MeditateAsWorkType
                 Log.ErrorOnce("Psyfocus meditation is a Royalty-specific game system. If you want to use this code please check ModLister.RoyaltyInstalled before calling it.", 657324);
                 return new MeditationSpotAndFocus(spot, focus);
             }
-            Thing animaTree = pawn.Map.listerThings.ThingsOfDef(DefDatabase<ThingDef>.GetNamed("Plant_TreeAnima")).First();
-            CompMeditationFocus compMeditationFocus = animaTree.TryGetComp<CompMeditationFocus>();
-            if (compMeditationFocus != null && compMeditationFocus.CanPawnUse(pawn))
+            Thing animaTree = pawn.Map.listerThings.ThingsOfDef(DefDatabase<ThingDef>.GetNamed("Plant_TreeAnima")).FirstOrDefault();
+            if (animaTree != null)
             {
-                spot = MeditationUtility.MeditationSpotForFocus(animaTree, pawn);
-                focus = animaTree;
-                return new MeditationSpotAndFocus(spot, focus);
+                CompMeditationFocus compMeditationFocus = animaTree.TryGetComp<CompMeditationFocus>();
+                if (compMeditationFocus != null && compMeditationFocus.CanPawnUse(pawn))
+                {
+                    spot = MeditationUtility.MeditationSpotForFocus(animaTree, pawn);
+                    focus = animaTree;
+                    return new MeditationSpotAndFocus(spot, focus);
+                }
             }
             return new MeditationSpotAndFocus(spot, focus);
         }
