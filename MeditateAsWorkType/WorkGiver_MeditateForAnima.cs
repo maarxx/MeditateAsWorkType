@@ -44,9 +44,27 @@ namespace MeditateAsWorkType
                 CompMeditationFocus compMeditationFocus = animaTree.TryGetComp<CompMeditationFocus>();
                 if (compMeditationFocus != null && compMeditationFocus.CanPawnUse(pawn))
                 {
-                    spot = MeditationUtility.MeditationSpotForFocus(animaTree, pawn);
-                    focus = animaTree;
-                    return new MeditationSpotAndFocus(spot, focus);
+                    if (!pawn.HasPsylink || animaTree.GetStatValueForPawn(StatDefOf.MeditationFocusStrength, pawn) > float.Epsilon)
+                    {
+                        spot = MeditationUtility.MeditationSpotForFocus(animaTree, pawn);
+                        focus = animaTree;
+                        return new MeditationSpotAndFocus(spot, focus);
+                    }
+                    else
+                    {
+                        IntVec3 c2 = RCellFinder.RandomWanderDestFor(pawn, animaTree.Position, 4, delegate (Pawn p, IntVec3 c, IntVec3 r)
+                        {
+                            if (c.Standable(p.Map) && c.GetDoor(p.Map) == null)
+                            {
+                                return WanderRoomUtility.IsValidWanderDest(p, c, r);
+                            }
+                            return false;
+                        }, pawn.NormalMaxDanger());
+                        if (c2.IsValid)
+                        {
+                            return new MeditationSpotAndFocus(c2, null);
+                        }
+                    }
                 }
             }
             return new MeditationSpotAndFocus(spot, focus);

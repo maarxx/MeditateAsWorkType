@@ -22,21 +22,21 @@ namespace MeditateAsWorkType
         }
     }
 
-    [HarmonyPatch]
-    class Patch_ToilFailConditions_FailOn
-    {
-        static System.Reflection.MethodBase TargetMethod()
-        {
-            return typeof(ToilFailConditions).GetMethods().FirstOrDefault(
-                x => x.Name.Equals("FailOn", StringComparison.OrdinalIgnoreCase) &&
-                x.IsGenericMethod)?.MakeGenericMethod(typeof(Toil));
-        }
-        static bool Prefix(ref Func<bool> condition)
-        {
-            Log.Message("Hello from Patch_ToilFailConditions_FailOn: " + condition.ToString());
-            return true;
-        }
-    }
+    //[HarmonyPatch]
+    //class Patch_ToilFailConditions_FailOn
+    //{
+    //    static System.Reflection.MethodBase TargetMethod()
+    //    {
+    //        return typeof(ToilFailConditions).GetMethods().FirstOrDefault(
+    //            x => x.Name.Equals("FailOn", StringComparison.OrdinalIgnoreCase) &&
+    //            x.IsGenericMethod)?.MakeGenericMethod(typeof(Toil));
+    //    }
+    //    static bool Prefix(ref Func<bool> condition)
+    //    {
+    //        Log.Message("Hello from Patch_ToilFailConditions_FailOn: " + condition.ToString());
+    //        return true;
+    //    }
+    //}
 
     [HarmonyPatch(typeof(MeditationUtility))]
     [HarmonyPatch("CanMeditateNow")]
