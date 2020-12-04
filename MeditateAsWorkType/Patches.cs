@@ -22,12 +22,16 @@ namespace MeditateAsWorkType
         }
     }
 
-    [HarmonyPatch(typeof(ToilFailConditions))]
-    [HarmonyPatch("FailOn")]
-    [HarmonyPatch(new Type[] { typeof(Toil), typeof(Func<Toil, bool>) })]
+    [HarmonyPatch]
     class Patch_ToilFailConditions_FailOn
     {
-        public static bool Prefix(ref Func<Toil, bool> condition)
+        static System.Reflection.MethodBase TargetMethod()
+        {
+            return typeof(ToilFailConditions).GetMethods().FirstOrDefault(
+                x => x.Name.Equals("FailOn", StringComparison.OrdinalIgnoreCase) &&
+                x.IsGenericMethod)?.MakeGenericMethod(typeof(Toil));
+        }
+        static bool Prefix(ref Func<bool> condition)
         {
             Log.Message("Hello from Patch_ToilFailConditions_FailOn: " + condition.ToString());
             return true;
