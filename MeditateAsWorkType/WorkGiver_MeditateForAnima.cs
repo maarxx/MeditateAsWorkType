@@ -14,16 +14,20 @@ namespace MeditateAsWorkType
     {
         public override Job NonScanJob(Pawn pawn)
         {
-            return GetAnimaMeditationJob(pawn);
+            if (MeditationUtility.CanMeditateNow(pawn))
+            {
+                return GetAnimaMeditationJob(pawn);
+            }
+            return null;
         }
 
-        public static Job GetAnimaMeditationJob(Pawn pawn, bool forJoy = false)
+        public static Job GetAnimaMeditationJob(Pawn pawn)
         {
             MeditationSpotAndFocus meditationSpotAndFocus = FindAnimaMeditationSpot(pawn);
             if (meditationSpotAndFocus.IsValid)
             {
                 Job job = JobMaker.MakeJob(JobDefOf.Meditate, meditationSpotAndFocus.spot, null, meditationSpotAndFocus.focus);
-                job.ignoreJoyTimeAssignment = !forJoy;
+                job.ignoreJoyTimeAssignment = true;
                 return job;
             }
             return null;
@@ -44,7 +48,7 @@ namespace MeditateAsWorkType
                 CompMeditationFocus compMeditationFocus = animaTree.TryGetComp<CompMeditationFocus>();
                 if (compMeditationFocus != null && compMeditationFocus.CanPawnUse(pawn))
                 {
-                    if (!pawn.HasPsylink || animaTree.GetStatValueForPawn(StatDefOf.MeditationFocusStrength, pawn) > float.Epsilon)
+                    if (pawn.HasPsylink && animaTree.GetStatValueForPawn(StatDefOf.MeditationFocusStrength, pawn) > float.Epsilon)
                     {
                         spot = MeditationUtility.MeditationSpotForFocus(animaTree, pawn);
                         focus = animaTree;
@@ -52,14 +56,16 @@ namespace MeditateAsWorkType
                     }
                     else
                     {
-                        IntVec3 c2 = RCellFinder.RandomWanderDestFor(pawn, animaTree.Position, 4, delegate (Pawn p, IntVec3 c, IntVec3 r)
-                        {
-                            if (c.Standable(p.Map) && c.GetDoor(p.Map) == null)
+                        IntVec3 c2 = RCellFinder.RandomWanderDestFor(
+                            pawn,
+                            animaTree.Position,
+                            4,
+                            delegate (Pawn p, IntVec3 c, IntVec3 r)
                             {
-                                return WanderRoomUtility.IsValidWanderDest(p, c, r);
-                            }
-                            return false;
-                        }, pawn.NormalMaxDanger());
+                                return c.Standable(p.Map) && c.GetDoor(p.Map) == null;
+                            },
+                            pawn.NormalMaxDanger()
+                        );
                         if (c2.IsValid)
                         {
                             return new MeditationSpotAndFocus(c2, null);

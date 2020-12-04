@@ -44,7 +44,6 @@ namespace MeditateAsWorkType
     {
         public static bool Prefix(Pawn pawn, ref bool __result)
         {
-            //Log.Message("Hello from meditateasworktype CanMeditateNow");
             __result = true;
             if (pawn.needs.rest != null && (int)pawn.needs.rest.CurCategory >= 2)
             {
