@@ -43,7 +43,7 @@ namespace MeditateAsWorkType
                 return new MeditationSpotAndFocus(spot, focus);
             }
             Thing animaTree = pawn.Map.listerThings.ThingsOfDef(DefDatabase<ThingDef>.GetNamed("Plant_TreeAnima")).FirstOrDefault();
-            if (animaTree != null && pawn.playerSettings.AreaRestriction[animaTree.Position])
+            if (animaTree != null)
             {
                 CompMeditationFocus compMeditationFocus = animaTree.TryGetComp<CompMeditationFocus>();
                 if (compMeditationFocus != null && compMeditationFocus.CanPawnUse(pawn))
@@ -62,7 +62,8 @@ namespace MeditateAsWorkType
                             4,
                             delegate (Pawn p, IntVec3 c, IntVec3 r)
                             {
-                                return c.Standable(p.Map) && c.GetDoor(p.Map) == null && pawn.playerSettings.AreaRestriction[c];
+                                Area area = pawn.playerSettings.AreaRestriction;
+                                return c.Standable(p.Map) && c.GetDoor(p.Map) == null && (area == null || area[c]);
                             },
                             pawn.NormalMaxDanger()
                         );
