@@ -56,18 +56,18 @@ namespace MeditateAsWorkType
                     }
                     else
                     {
+                        Area area = pawn.playerSettings.AreaRestriction;
                         IntVec3 c2 = RCellFinder.RandomWanderDestFor(
                             pawn,
                             animaTree.Position,
                             4,
                             delegate (Pawn p, IntVec3 c, IntVec3 r)
                             {
-                                Area area = pawn.playerSettings.AreaRestriction;
                                 return c.Standable(p.Map) && c.GetDoor(p.Map) == null && (area == null || area[c]);
                             },
                             pawn.NormalMaxDanger()
                         );
-                        if (c2.IsValid)
+                        if (c2.IsValid && (area == null || area[c2]))
                         {
                             return new MeditationSpotAndFocus(c2, null);
                         }
