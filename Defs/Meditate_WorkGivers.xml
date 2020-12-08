@@ -4,10 +4,19 @@
   <!-- ============= Meditate ============= -->
   
   <WorkGiverDef>
-    <defName>Meditate</defName>
-    <label>meditate</label>
-    <giverClass>MeditateAsWorkType.WorkGiver_Meditate</giverClass>
-    <workType>Meditate</workType>
+    <defName>MeditatePsyfocus</defName>
+    <label>meditate for psyfocus</label>
+    <giverClass>MeditateAsWorkType.WorkGiver_MeditateForPsyfocus</giverClass>
+    <workType>MeditateForPsyfocus</workType>
+    <verb>meditate</verb>
+    <gerund>meditating</gerund>
+  </WorkGiverDef>
+  
+   <WorkGiverDef>
+    <defName>MeditateAnima</defName>
+    <label>meditate for anima grass</label>
+    <giverClass>MeditateAsWorkType.WorkGiver_MeditateForAnima</giverClass>
+    <workType>MeditateForAnima</workType>
     <verb>meditate</verb>
     <gerund>meditating</gerund>
   </WorkGiverDef>

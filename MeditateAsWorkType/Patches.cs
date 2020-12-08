@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Verse;
+using Verse.AI;
 
 namespace MeditateAsWorkType
 {
@@ -21,13 +22,28 @@ namespace MeditateAsWorkType
         }
     }
 
+    //[HarmonyPatch]
+    //class Patch_ToilFailConditions_FailOn
+    //{
+    //    static System.Reflection.MethodBase TargetMethod()
+    //    {
+    //        return typeof(ToilFailConditions).GetMethods().FirstOrDefault(
+    //            x => x.Name.Equals("FailOn", StringComparison.OrdinalIgnoreCase) &&
+    //            x.IsGenericMethod)?.MakeGenericMethod(typeof(Toil));
+    //    }
+    //    static bool Prefix(ref Func<bool> condition)
+    //    {
+    //        Log.Message("Hello from Patch_ToilFailConditions_FailOn: " + condition.ToString());
+    //        return true;
+    //    }
+    //}
+
     [HarmonyPatch(typeof(MeditationUtility))]
     [HarmonyPatch("CanMeditateNow")]
     class Patch_MeditationUtility_CanMeditateNow
     {
         public static bool Prefix(Pawn pawn, ref bool __result)
         {
-            //Log.Message("Hello from meditateasworktype CanMeditateNow");
             __result = true;
             if (pawn.needs.rest != null && (int)pawn.needs.rest.CurCategory >= 2)
             {
@@ -42,9 +58,10 @@ namespace MeditateAsWorkType
                 __result = false;
             }
             //if (pawn.health.hediffSet.BleedRateTotal > 0f || (HealthAIUtility.ShouldSeekMedicalRest(pawn) && pawn.timetable?.CurrentAssignment != TimeAssignmentDefOf.Meditate) || HealthAIUtility.ShouldSeekMedicalRestUrgent(pawn))
-            //{
-            //    return false;
-            //}
+            if (pawn.health.hediffSet.HasTendableHediff())
+            {
+                __result = false;
+            }
             return false;
         }
     }
