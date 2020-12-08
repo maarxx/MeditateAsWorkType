@@ -58,9 +58,10 @@ namespace MeditateAsWorkType
                 __result = false;
             }
             //if (pawn.health.hediffSet.BleedRateTotal > 0f || (HealthAIUtility.ShouldSeekMedicalRest(pawn) && pawn.timetable?.CurrentAssignment != TimeAssignmentDefOf.Meditate) || HealthAIUtility.ShouldSeekMedicalRestUrgent(pawn))
-            //{
-            //    return false;
-            //}
+            if (pawn.health.hediffSet.HasTendableHediff())
+            {
+                __result = false;
+            }
             return false;
         }
     }
