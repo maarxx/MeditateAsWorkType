@@ -4,6 +4,8 @@ This is a mod for the game RimWorld by Ludeon Studios.
 
 It allows you to configure Meditation in the Work tab instead of the Schedule tab.
 
+We're on Steam: https://steamcommunity.com/sharedfiles/filedetails/?id=2324532667
+
 # Table of Contents
 
 * [Introduction and Explanation](#introduction-and-explanation)
