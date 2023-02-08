@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <WorkTypeDef>
+    <defName>MeditateForPsyfocus</defName>
+    <labelShort>Meditate (P)</labelShort>
+    <pawnLabel>Meditate</pawnLabel>
+    <gerundLabel>meditating</gerundLabel>
+    <description>Meditate for psyfocus.</description>
+    <verb>Meditating</verb>
+    <naturalPriority>90</naturalPriority>
+  </WorkTypeDef>
+  
+  <WorkTypeDef>
+    <defName>MeditateForAnima</defName>
+    <labelShort>Meditate (A)</labelShort>
+    <pawnLabel>Meditate</pawnLabel>
+    <gerundLabel>meditating</gerundLabel>
+    <description>Meditate for anima grass.</description>
+    <verb>Meditating</verb>
+    <naturalPriority>80</naturalPriority>
+  </WorkTypeDef>
+
+</Defs>
