@@ -11,25 +11,25 @@ namespace MeditateAsWorkType
     public class DiminishingGrassComp : ThingComp
     {
         private ThingWithComps Tree => this.parent;
-        public float diminishingGrassThreshold;
+        public float allowableProgressMultipler;
 
-        public float CurrentGrassAmount
+        public float currentProgressMultiplier
         {
             get
             {
                 CompPsylinkable compPsylinkable = Tree.TryGetComp<CompPsylinkable>();
-                return compPsylinkable.CompSubplant.SubplantsForReading.Count;
+                return (float)compPsylinkable.GetType().GetProperty("ProgressMultiplier").GetValue(compPsylinkable, null);
             }
         }
 
         public override void PostExposeData()
         {
-            Scribe_Values.Look(ref diminishingGrassThreshold, "diminishingGrassThreshold", 1.0f);
+            Scribe_Values.Look(ref allowableProgressMultipler, "allowableProgressMultipler", 0.0f);
         }
 
         public virtual void ExposeData()
         {
-            Scribe_Values.Look(ref diminishingGrassThreshold, "diminishingGrassThreshold");
+            Scribe_Values.Look(ref allowableProgressMultipler, "allowableProgressMultipler");
         }
 
         public override void CompTickRare()
