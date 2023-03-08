@@ -13,7 +13,7 @@ namespace MeditateAsWorkType
     [StaticConstructorOnStartup]
     public class DiminishingGrassGizmo : Gizmo
     {
-        private CompTreeConnection connection;
+        private DiminishingGrassComp connection;
 
         private float selectedStrengthTarget = -1f;
 
@@ -37,7 +37,7 @@ namespace MeditateAsWorkType
             {
                 if (!draggingBar)
                 {
-                    return connection.DesiredConnectionStrength;
+                    return connection.allowableProgressPenalty;
                 }
                 return selectedStrengthTarget;
             }
@@ -45,7 +45,7 @@ namespace MeditateAsWorkType
 
         private float OverrideHeight => 75f + ExtraHeight;
 
-        public Gizmo_PruningConfig(CompTreeConnection connection)
+        public DiminishingGrassGizmo(DiminishingGrassComp connection)
         {
             this.connection = connection;
             Order = -100f;
@@ -69,11 +69,11 @@ namespace MeditateAsWorkType
             float curY = rect3.yMin;
             Text.Anchor = TextAnchor.UpperCenter;
             Text.Font = GameFont.Small;
-            Widgets.Label(rect3.x, ref curY, rect3.width, "ConnectionStrength".Translate());
+            Widgets.Label(rect3.x, ref curY, rect3.width, "Allowable Progress Penalty");
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.UpperLeft;
-            Widgets.Label(rect3.x, ref curY, rect3.width, "DesiredConnectionStrength".Translate() + ": " + DesiredConnectionStrength.ToStringPercent());
-            Widgets.Label(rect3.x, ref curY, rect3.width, "PruningHoursToMaintain".Translate() + ": " + connection.PruningHoursToMaintain(DesiredConnectionStrength).ToString("F1"));
+            Widgets.Label(rect3.x, ref curY, rect3.width, "Current Progress Penalty: " + connection.currentProgressPenalty.ToStringPercent());
+            Widgets.Label(rect3.x, ref curY, rect3.width, "Allowable Progress Penalty: " + connection.allowableProgressPenalty.ToStringPercent());
             Text.Font = GameFont.Small;
             if (Mouse.IsOver(rect2) && !draggingBar)
             {
@@ -86,13 +86,7 @@ namespace MeditateAsWorkType
 
         private string GetTip()
         {
-            string text = "DesiredConnectionStrengthDesc".Translate(connection.parent.Named("TREE"), connection.ConnectedPawn.Named("CONNECTEDPAWN"), connection.ConnectionStrengthLossPerDay.ToStringPercent().Named("FALL")).Resolve();
-            string text2 = connection.AffectingBuildingsDescription("CurrentlyAffectedBy");
-            if (!text2.NullOrEmpty())
-            {
-                text = text + "\n\n" + text2;
-            }
-            return text;
+            return "If too many pawn hours are spent meditating for anima grass in one day, there is a progress multiplier penalty.\n\nYou can set a cutoff here where pawns should stop wasting their time for minimal grass.";
         }
 
         private void DrawThreshold(Rect rect, float percent, float strValue)
@@ -139,15 +133,21 @@ namespace MeditateAsWorkType
             rect.yMax = inRect.yMax - 4f;
             rect.yMin = curY + 10f;
             bool flag = Mouse.IsOver(rect);
-            float connectionStrength = connection.ConnectionStrength;
+            float connectionStrength = connection.currentProgressPenalty;
             Widgets.FillableBar(rect, connectionStrength, flag ? StrengthHighlightTex : StrengthTex, EmptyBarTex, doBorder: true);
-            foreach (CurvePoint point in connection.Props.maxDryadsPerConnectionStrengthCurve.Points)
-            {
+
+            SimpleCurve myCurve = new SimpleCurve(new CurvePoint[] {
+                new CurvePoint(0.5f, 2.4f),
+                new CurvePoint(0.75f, 3.6f),
+                new CurvePoint(0.85f, 4.2f)
+            });
+            foreach (CurvePoint point in myCurve.Points) {
                 if (point.x > 0f)
                 {
                     DrawThreshold(rect, point.x, connectionStrength);
                 }
             }
+
             float num = Mathf.Clamp(Mathf.Round((Event.current.mousePosition.x - (rect.x + 3f)) / (rect.width - 8f) * 20f) / 20f, 0f, 1f);
             Event current2 = Event.current;
             if (current2.type == EventType.MouseDown && current2.button == 0 && flag)
@@ -170,7 +170,7 @@ namespace MeditateAsWorkType
             {
                 if (selectedStrengthTarget >= 0f)
                 {
-                    connection.DesiredConnectionStrength = selectedStrengthTarget;
+                    connection.allowableProgressPenalty = selectedStrengthTarget;
                 }
                 selectedStrengthTarget = -1f;
                 draggingBar = false;
@@ -179,7 +179,7 @@ namespace MeditateAsWorkType
             DrawStrengthTarget(rect, DesiredConnectionStrength);
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label(rect, connection.ConnectionStrength.ToStringPercent());
+            Widgets.Label(rect, connection.currentProgressPenalty.ToStringPercent());
             Text.Anchor = TextAnchor.UpperLeft;
             GUI.color = Color.white;
         }

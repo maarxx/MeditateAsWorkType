@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Verse;
@@ -11,25 +12,30 @@ namespace MeditateAsWorkType
     public class DiminishingGrassComp : ThingComp
     {
         private ThingWithComps Tree => this.parent;
-        public float allowableProgressMultipler;
+        public float allowableProgressPenalty;
 
-        public float currentProgressMultiplier
+        public float currentProgressPenalty
         {
             get
             {
-                CompPsylinkable compPsylinkable = Tree.TryGetComp<CompPsylinkable>();
-                return (float)compPsylinkable.GetType().GetProperty("ProgressMultiplier").GetValue(compPsylinkable, null);
+                CompSpawnSubplant compSpawnSubplant = Tree.TryGetComp<CompPsylinkable>().CompSubplant;
+                return 1.0f - (float)(compSpawnSubplant.GetType().GetProperty("ProgressMultiplier", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(compSpawnSubplant));
             }
+        }
+
+        public bool IsCurrentPenaltyAllowable()
+        {
+            return currentProgressPenalty < allowableProgressPenalty;
         }
 
         public override void PostExposeData()
         {
-            Scribe_Values.Look(ref allowableProgressMultipler, "allowableProgressMultipler", 0.0f);
+            Scribe_Values.Look(ref allowableProgressPenalty, "allowableProgressPenalty", 1.0f);
         }
 
         public virtual void ExposeData()
         {
-            Scribe_Values.Look(ref allowableProgressMultipler, "allowableProgressMultipler");
+            Scribe_Values.Look(ref allowableProgressPenalty, "allowableProgressPenalty");
         }
 
         public override void CompTickRare()
