@@ -143,13 +143,23 @@ namespace MeditateAsWorkType
             bool flag = Mouse.IsOver(rect);
             float connectionStrength = connection.diminishingGrassThreshold;
             Widgets.FillableBar(rect, connectionStrength, flag ? StrengthHighlightTex : StrengthTex, EmptyBarTex, doBorder: true);
-            //foreach (CurvePoint point in connection.Props.maxDryadsPerConnectionStrengthCurve.Points)
-            //{
-            //    if (point.x > 0f)
-            //    {
-            //        DrawThreshold(rect, point.x, connectionStrength);
-            //    }
-            //}
+
+            float scaleHoursMax = 70f;
+            SimpleCurve myCurve = new SimpleCurve(new CurvePoint[] {
+                new CurvePoint(12f / scaleHoursMax, 2.4f),
+                new CurvePoint(24f / scaleHoursMax, 3.6f),
+                new CurvePoint(36f / scaleHoursMax, 4.2f),
+                new CurvePoint(48f / scaleHoursMax, 4.8f),
+                new CurvePoint(60f / scaleHoursMax, 5.16f)
+            });
+            foreach (CurvePoint point in myCurve.Points)
+            {
+                if (point.x > 0f)
+                {
+                    DrawThreshold(rect, point.x, connectionStrength);
+                }
+            }
+
             float num = Mathf.Clamp(Mathf.Round((Event.current.mousePosition.x - (rect.x + 3f)) / (rect.width - 8f) * 20f) / 20f, 0f, 1f);
             Event current2 = Event.current;
             if (current2.type == EventType.MouseDown && current2.button == 0 && flag)
