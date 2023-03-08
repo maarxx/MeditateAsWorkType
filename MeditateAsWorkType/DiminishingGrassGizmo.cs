@@ -13,13 +13,7 @@ namespace MeditateAsWorkType
     [StaticConstructorOnStartup]
     public class DiminishingGrassGizmo : Gizmo
     {
-        public DiminishingGrassGizmo(DiminishingGrassComp connection)
-        {
-            this.connection = connection;
-            Order = -100f;
-        }
-
-        private DiminishingGrassComp connection;
+        private CompTreeConnection connection;
 
         private float selectedStrengthTarget = -1f;
 
@@ -43,13 +37,19 @@ namespace MeditateAsWorkType
             {
                 if (!draggingBar)
                 {
-                    return connection.diminishingGrassThreshold;
+                    return connection.DesiredConnectionStrength;
                 }
                 return selectedStrengthTarget;
             }
         }
 
         private float OverrideHeight => 75f + ExtraHeight;
+
+        public Gizmo_PruningConfig(CompTreeConnection connection)
+        {
+            this.connection = connection;
+            Order = -100f;
+        }
 
         public override float GetWidth(float maxWidth)
         {
@@ -72,10 +72,8 @@ namespace MeditateAsWorkType
             Widgets.Label(rect3.x, ref curY, rect3.width, "ConnectionStrength".Translate());
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.UpperLeft;
-            //Widgets.Label(rect3.x, ref curY, rect3.width, "DesiredConnectionStrength".Translate() + ": " + DesiredConnectionStrength.ToStringPercent());
-            //Widgets.Label(rect3.x, ref curY, rect3.width, "PruningHoursToMaintain".Translate() + ": " + connection.PruningHoursToMaintain(DesiredConnectionStrength).ToString("F1"));
-            Widgets.Label(rect3.x, ref curY, rect3.width, "DesiredConnectionStrength".Translate() + ": ");
-            Widgets.Label(rect3.x, ref curY, rect3.width, "PruningHoursToMaintain".Translate() + ": ");
+            Widgets.Label(rect3.x, ref curY, rect3.width, "DesiredConnectionStrength".Translate() + ": " + DesiredConnectionStrength.ToStringPercent());
+            Widgets.Label(rect3.x, ref curY, rect3.width, "PruningHoursToMaintain".Translate() + ": " + connection.PruningHoursToMaintain(DesiredConnectionStrength).ToString("F1"));
             Text.Font = GameFont.Small;
             if (Mouse.IsOver(rect2) && !draggingBar)
             {
@@ -88,13 +86,13 @@ namespace MeditateAsWorkType
 
         private string GetTip()
         {
-            //string text = "DesiredConnectionStrengthDesc".Translate(connection.parent.Named("TREE"), connection.ConnectedPawn.Named("CONNECTEDPAWN"), connection.ConnectionStrengthLossPerDay.ToStringPercent().Named("FALL")).Resolve();
-            //string text2 = connection.AffectingBuildingsDescription("CurrentlyAffectedBy");
-            //if (!text2.NullOrEmpty())
-            //{
-            //    text = text + "\n\n" + text2;
-            //}
-            return "FOOBAR";
+            string text = "DesiredConnectionStrengthDesc".Translate(connection.parent.Named("TREE"), connection.ConnectedPawn.Named("CONNECTEDPAWN"), connection.ConnectionStrengthLossPerDay.ToStringPercent().Named("FALL")).Resolve();
+            string text2 = connection.AffectingBuildingsDescription("CurrentlyAffectedBy");
+            if (!text2.NullOrEmpty())
+            {
+                text = text + "\n\n" + text2;
+            }
+            return text;
         }
 
         private void DrawThreshold(Rect rect, float percent, float strValue)
@@ -141,25 +139,15 @@ namespace MeditateAsWorkType
             rect.yMax = inRect.yMax - 4f;
             rect.yMin = curY + 10f;
             bool flag = Mouse.IsOver(rect);
-            float connectionStrength = connection.CurrentGrassAmount / 20f;
+            float connectionStrength = connection.ConnectionStrength;
             Widgets.FillableBar(rect, connectionStrength, flag ? StrengthHighlightTex : StrengthTex, EmptyBarTex, doBorder: true);
-
-            float scaleHoursMax = 70f;
-            SimpleCurve myCurve = new SimpleCurve(new CurvePoint[] {
-                new CurvePoint(12f / scaleHoursMax, 2.4f),
-                new CurvePoint(24f / scaleHoursMax, 3.6f),
-                new CurvePoint(36f / scaleHoursMax, 4.2f),
-                new CurvePoint(48f / scaleHoursMax, 4.8f),
-                new CurvePoint(60f / scaleHoursMax, 5.16f)
-            });
-            foreach (CurvePoint point in myCurve.Points)
+            foreach (CurvePoint point in connection.Props.maxDryadsPerConnectionStrengthCurve.Points)
             {
                 if (point.x > 0f)
                 {
                     DrawThreshold(rect, point.x, connectionStrength);
                 }
             }
-
             float num = Mathf.Clamp(Mathf.Round((Event.current.mousePosition.x - (rect.x + 3f)) / (rect.width - 8f) * 20f) / 20f, 0f, 1f);
             Event current2 = Event.current;
             if (current2.type == EventType.MouseDown && current2.button == 0 && flag)
@@ -182,7 +170,7 @@ namespace MeditateAsWorkType
             {
                 if (selectedStrengthTarget >= 0f)
                 {
-                    connection.diminishingGrassThreshold = selectedStrengthTarget;
+                    connection.DesiredConnectionStrength = selectedStrengthTarget;
                 }
                 selectedStrengthTarget = -1f;
                 draggingBar = false;
@@ -191,10 +179,9 @@ namespace MeditateAsWorkType
             DrawStrengthTarget(rect, DesiredConnectionStrength);
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label(rect, connection.diminishingGrassThreshold.ToStringPercent());
+            Widgets.Label(rect, connection.ConnectionStrength.ToStringPercent());
             Text.Anchor = TextAnchor.UpperLeft;
             GUI.color = Color.white;
         }
     }
-
 }
