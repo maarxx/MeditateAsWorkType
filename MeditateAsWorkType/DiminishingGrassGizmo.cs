@@ -141,7 +141,7 @@ namespace MeditateAsWorkType
             rect.yMax = inRect.yMax - 4f;
             rect.yMin = curY + 10f;
             bool flag = Mouse.IsOver(rect);
-            float connectionStrength = connection.diminishingGrassThreshold;
+            float connectionStrength = connection.CurrentGrassAmount / 20f;
             Widgets.FillableBar(rect, connectionStrength, flag ? StrengthHighlightTex : StrengthTex, EmptyBarTex, doBorder: true);
 
             float scaleHoursMax = 70f;

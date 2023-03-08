@@ -13,6 +13,15 @@ namespace MeditateAsWorkType
         private ThingWithComps Tree => this.parent;
         public float diminishingGrassThreshold;
 
+        public float CurrentGrassAmount
+        {
+            get
+            {
+                CompPsylinkable compPsylinkable = Tree.TryGetComp<CompPsylinkable>();
+                return compPsylinkable.CompSubplant.SubplantsForReading.Count;
+            }
+        }
+
         public override void PostExposeData()
         {
             Scribe_Values.Look(ref diminishingGrassThreshold, "diminishingGrassThreshold", 1.0f);
