@@ -43,7 +43,7 @@ namespace MeditateAsWorkType
                 return new MeditationSpotAndFocus(spot, focus);
             }
             Thing animaTree = pawn.Map.listerThings.ThingsOfDef(DefDatabase<ThingDef>.GetNamed("Plant_TreeAnima")).FirstOrDefault();
-            if (animaTree != null)
+            if (animaTree != null && animaTree.TryGetComp<DiminishingGrassComp>().IsCurrentPenaltyAllowable())
             {
                 CompMeditationFocus compMeditationFocus = animaTree.TryGetComp<CompMeditationFocus>();
                 if (compMeditationFocus != null && compMeditationFocus.CanPawnUse(pawn))

@@ -31,6 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DiminishingGrassComp.cs" />
+    <Compile Include="DiminishingGrassGizmo.cs" />
     <Compile Include="Patches.cs" />
     <Compile Include="WorkGiver_MeditateForAnima.cs" />
     <Compile Include="WorkGiver_MeditateForPsyfocus.cs" />
