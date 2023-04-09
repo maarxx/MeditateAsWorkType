@@ -13,8 +13,8 @@ namespace MeditateAsWorkType
     {
         public override Job NonScanJob(Pawn pawn)
         {
-            bool shouldMeditate = pawn.HasPsylink && pawn.psychicEntropy.CurrentPsyfocus < pawn.psychicEntropy.TargetPsyfocus;
-            if (shouldMeditate && MeditationUtility.CanMeditateNow(pawn))
+            bool shouldMeditate = pawn.HasPsylink && pawn.psychicEntropy.CurrentPsyfocus < pawn.psychicEntropy.TargetPsyfocus && MeditationUtility.CanMeditateNow(pawn);
+            if (shouldMeditate)
             {
                 return MeditationUtility.GetMeditationJob(pawn);
             }
