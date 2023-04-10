@@ -12,7 +12,7 @@ namespace MeditateAsWorkType
     public class DiminishingGrassComp : ThingComp
     {
         private ThingWithComps Tree => this.parent;
-        public float allowableProgressPenalty;
+        public float allowableProgressPenalty = 1.0f;
 
         public float currentProgressPenalty
         {
