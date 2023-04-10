@@ -12,7 +12,7 @@ namespace MeditateAsWorkType
     public class DiminishingGrassComp : ThingComp
     {
         private ThingWithComps Tree => this.parent;
-        public float allowableProgressPenalty;
+        public float allowableProgressPenalty = 1.0f;
 
         public float currentProgressPenalty
         {
@@ -35,7 +35,7 @@ namespace MeditateAsWorkType
 
         public virtual void ExposeData()
         {
-            Scribe_Values.Look(ref allowableProgressPenalty, "allowableProgressPenalty");
+            Scribe_Values.Look(ref allowableProgressPenalty, "allowableProgressPenalty", 1.0f);
         }
 
         public override void CompTickRare()

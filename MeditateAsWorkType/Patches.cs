@@ -49,11 +49,11 @@ namespace MeditateAsWorkType
             {
                 __result = false;
             }
-            if (pawn.needs.food.Starving)
+            if (pawn.needs.food != null && pawn.needs.food.Starving)
             {
                 __result = false;
             }
-            if (!pawn.Awake())
+            if (pawn.Downed || !pawn.Awake())
             {
                 __result = false;
             }
