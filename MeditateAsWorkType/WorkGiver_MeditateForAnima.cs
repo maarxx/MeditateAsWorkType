@@ -64,7 +64,7 @@ namespace MeditateAsWorkType
                 return new MeditationSpotAndFocus(spot, focus);
             }
             Room ownedRoom = pawn.ownership.OwnedRoom;
-            foreach (LocalTargetInfo item in MeditationUtility.AllMeditationSpotCandidates(pawn))
+            foreach (LocalTargetInfo item in AllAnimaMeditationSpotCandidates(pawn))
             {
                 if (MeditationUtility.SafeEnvironmentalConditions(pawn, item.Cell, pawn.Map) && item.Cell.Standable(pawn.Map) && !item.Cell.IsForbidden(pawn))
                 {
@@ -78,8 +78,11 @@ namespace MeditateAsWorkType
                     {
                         if (localTargetInfo.Thing?.def?.defName == "Plant_TreeAnima")
                         {
-                            num2 += 100f;
-                            // TODO: Rank by Diminishing Penalty (Too Many Hours) and Grass Growth Multiplier (Buildings Nearby)
+                            if (localTargetInfo.Thing.TryGetComp<DiminishingGrassComp>()?.IsCurrentPenaltyAllowable() ?? false)
+                            {
+                                num2 += 1000f;
+                                // TODO: Rank by Diminishing Penalty (Too Many Hours) and Grass Growth Multiplier (Buildings Nearby)
+                            }
                         }
                     }
                     Room room = item.Cell.GetRoom(pawn.Map);
@@ -109,6 +112,108 @@ namespace MeditateAsWorkType
                 }
             }
             return new MeditationSpotAndFocus(spot, focus);
+        }
+
+        public static IEnumerable<LocalTargetInfo> AllAnimaMeditationSpotCandidates(Pawn pawn, bool allowFallbackSpots = true)
+        {
+            if (pawn.royalty != null && pawn.royalty.AllTitlesInEffectForReading.Count > 0 && !pawn.IsPrisonerOfColony)
+            {
+                Building_Throne building_Throne = RoyalTitleUtility.FindBestUsableThrone(pawn);
+                if (building_Throne != null)
+                {
+                    yield return building_Throne;
+                }
+            }
+            if (!pawn.IsPrisonerOfColony)
+            {
+                foreach (Building item in from s in pawn.Map.listerBuildings.AllBuildingsColonistOfDef(ThingDefOf.MeditationSpot)
+                                          where MeditationUtility.IsValidMeditationBuildingForPawn(s, pawn)
+                                          select s)
+                {
+                    yield return item;
+                }
+            }
+            List<Thing> list = pawn.Map.listerThings.ThingsInGroup(ThingRequestGroup.MeditationFocus);
+            foreach (Thing item2 in list)
+            {
+                if (item2.def != ThingDefOf.Wall)
+                {
+                    Room room2 = item2.GetRoom();
+                    if ((room2 == null || MeditationUtility.CanUseRoomToMeditate(room2, pawn)) && item2.GetStatValueForPawn(StatDefOf.MeditationFocusStrength, pawn) > 0f)
+                    {
+                        LocalTargetInfo localTargetInfo = MeditationUtility.MeditationSpotForFocus(item2, pawn);
+                        if (localTargetInfo.IsValid)
+                        {
+                            yield return localTargetInfo;
+                        }
+                    }
+                }
+            }
+            Building_Bed bed = pawn.ownership.OwnedBed;
+            Room room3 = bed?.GetRoom();
+            if (room3 != null && !room3.PsychologicallyOutdoors && pawn.CanReserveAndReach(bed, PathEndMode.OnCell, pawn.NormalMaxDanger()))
+            {
+                foreach (LocalTargetInfo item3 in MeditationUtility.FocusSpotsInTheRoom(pawn, room3))
+                {
+                    yield return item3;
+                }
+                IntVec3 c2 = RCellFinder.RandomWanderDestFor(pawn, bed.Position, 10f, delegate (Pawn p, IntVec3 c, IntVec3 r)
+                {
+                    if (c.Standable(p.Map) && c.GetDoor(p.Map) == null)
+                    {
+                        return WanderRoomUtility.IsValidWanderDest(p, c, r);
+                    }
+                    return false;
+                }, pawn.NormalMaxDanger());
+                if (c2.IsValid)
+                {
+                    yield return c2;
+                }
+            }
+            foreach (Room room in MeditationUtility.UsableWorshipRooms(pawn))
+            {
+                foreach (LocalTargetInfo item4 in MeditationUtility.FocusSpotsInTheRoom(pawn, room))
+                {
+                    if (pawn.CanReach(item4, PathEndMode.Touch, pawn.NormalMaxDanger()))
+                    {
+                        yield return item4;
+                    }
+                }
+                IntVec3 randomCell = room.Districts.RandomElement().Regions.RandomElement().RandomCell;
+                IntVec3 c2 = RCellFinder.RandomWanderDestFor(pawn, randomCell, 10f, delegate (Pawn p, IntVec3 c, IntVec3 r)
+                {
+                    if (c.GetRoom(p.Map) == room && c.Standable(p.Map) && c.GetDoor(p.Map) == null)
+                    {
+                        return WanderRoomUtility.IsValidWanderDest(p, c, r);
+                    }
+                    return false;
+                }, pawn.NormalMaxDanger());
+                if (c2.IsValid)
+                {
+                    yield return c2;
+                }
+            }
+            if (!pawn.IsPrisonerOfColony)
+            {
+                IntVec3 colonyWanderRoot = WanderUtility.GetColonyWanderRoot(pawn);
+                IntVec3 c2 = RCellFinder.RandomWanderDestFor(pawn, colonyWanderRoot, 10f, delegate (Pawn p, IntVec3 c, IntVec3 r)
+                {
+                    if (!c.Standable(p.Map) || c.GetDoor(p.Map) != null || !p.CanReserveAndReach(c, PathEndMode.OnCell, p.NormalMaxDanger()))
+                    {
+                        return false;
+                    }
+                    Room room4 = c.GetRoom(p.Map);
+                    if (room4 != null && !MeditationUtility.CanUseRoomToMeditate(room4, pawn))
+                    {
+                        return false;
+                    }
+                    return true;
+                }, pawn.NormalMaxDanger());
+                if (c2.IsValid)
+                {
+                    yield return c2;
+                }
+            }
         }
     }
 }
