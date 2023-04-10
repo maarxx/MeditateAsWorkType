@@ -14,12 +14,12 @@ namespace MeditateAsWorkType
     {
         public override Job NonScanJob(Pawn pawn)
         {
-            bool shouldMeditate = MeditationUtility.CanMeditateNow(pawn); // && is a tribal && withinDiminishingSlider;
+            bool shouldMeditate = MeditationFocusDefOf.Natural.CanPawnUse(pawn) && MeditationUtility.CanMeditateNow(pawn);
             if (shouldMeditate)
             {
                 Job meditationJob = GetAnimaMeditationJob(pawn);
-                //ThingDef animaTreeDef = DefDatabase<ThingDef>.GetNamed("Plant_TreeAnima");
-                if (true) // && is job at anima tree
+                Thing tree = meditationJob.targetC.Thing;
+                if (tree != null && (tree.TryGetComp<DiminishingGrassComp>()?.IsCurrentPenaltyAllowable() ?? false))
                 {
                     return meditationJob;
                 }
@@ -78,10 +78,9 @@ namespace MeditateAsWorkType
                     {
                         if (localTargetInfo.Thing?.def?.defName == "Plant_TreeAnima")
                         {
-                            num2 += 100f; // * grassPenaltyMultiplier;
+                            num2 += 100f;
+                            // TODO: Rank by Diminishing Penalty (Too Many Hours) and Grass Growth Multiplier (Buildings Nearby)
                         }
-                        //float treeSearchRadius = MeditationUtility.FocusObjectSearchRadius;
-                        //Thing animaTree = pawn.Map.listerThings.ThingsOfDef(DefDatabase<ThingDef>.GetNamed("Plant_TreeAnima")).FirstOrDefault();
                     }
                     Room room = item.Cell.GetRoom(pawn.Map);
                     if (room != null && ownedRoom == room)
