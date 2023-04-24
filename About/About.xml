@@ -3,7 +3,9 @@
   <name>MeditateAsWorkType</name>
   <author>Maarx</author>
   <url>https://github.com/maarxx/MeditateAsWorkType/</url>
-  <description>Allows you to configure Meditation in the Work tab instead of the Schedule tab.</description>
+  <description>
+The mod allows you to configure Meditation in the Work tab instead of the Schedule tab.
+  </description>
   <packageId>maarx.meditateasworktype</packageId>
   <supportedVersions>
     <li>1.2</li>
