@@ -8,12 +8,9 @@ We're on Steam: https://steamcommunity.com/sharedfiles/filedetails/?id=232453266
 
 # Table of Contents
 
-* [Introduction and Explanation](#introduction-and-explanation)
-* [How to Install](#how-to-install)
-* [How to Update](#how-to-update)
-* [Bugs, New Features, and Updates](#bugs-new-features-and-updates)
+* [Introduction](#introduction)
 
-# Introduction and Explanation
+# Introduction
 
 The mod allows you to configure Meditation in the Work tab instead of the Schedule tab.
 
