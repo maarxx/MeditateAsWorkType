@@ -62,7 +62,7 @@ namespace MeditateAsWorkType
             Room ownedRoom = pawn.ownership.OwnedRoom;
             foreach (LocalTargetInfo item in AllAnimaMeditationSpotCandidates(pawn))
             {
-                if (MeditationUtility.SafeEnvironmentalConditions(pawn, item.Cell, pawn.Map) && item.Cell.Standable(pawn.Map) && !item.Cell.IsForbidden(pawn))
+                if (pawn.CanReserveAndReach(item, PathEndMode.OnCell, pawn.NormalMaxDanger()) && MeditationUtility.SafeEnvironmentalConditions(pawn, item.Cell, pawn.Map) && item.Cell.Standable(pawn.Map) && !item.Cell.IsForbidden(pawn))
                 {
                     float num2 = 1f / Mathf.Max(item.Cell.DistanceToSquared(pawn.Position), 0.1f);
                     LocalTargetInfo localTargetInfo = (item.Thing is Building_Throne) ? ((LocalTargetInfo)item.Thing) : MeditationUtility.BestFocusAt(item, pawn);
@@ -109,7 +109,10 @@ namespace MeditateAsWorkType
                 {
                     foreach (IntVec3 cell in GenRadial.RadialCellsAround(tree.Position, MeditationUtility.FocusObjectSearchRadius, false))
                     {
-                        yield return cell;
+                        if (cell.Standable(map))
+                        {
+                            yield return cell;
+                        }
                     }
                 }
             }
