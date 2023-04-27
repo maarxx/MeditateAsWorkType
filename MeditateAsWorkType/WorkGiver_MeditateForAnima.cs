@@ -76,9 +76,18 @@ namespace MeditateAsWorkType
                         num2 += 1f;
                     }
                     Building building;
-                    if (item.Thing != null && (building = (item.Thing as Building)) != null && building.GetAssignedPawn() == pawn)
+                    if (item.Thing != null && (building = (item.Thing as Building)) != null)
                     {
-                        num2 += (float)((building.def == ThingDefOf.MeditationSpot) ? 200 : 100);
+                        Pawn assignedPawn = building.GetAssignedPawn();
+                        if (assignedPawn == null || assignedPawn == pawn)
+                        {
+                            num2 += (assignedPawn == null) ? 50 : 100;
+
+                            if (building.def == ThingDefOf.MeditationSpot)
+                            {
+                                num2 += 100;
+                            }
+                        }
                     }
                     if (room != null && ModsConfig.IdeologyActive && room.Role == RoomRoleDefOf.WorshipRoom)
                     {
