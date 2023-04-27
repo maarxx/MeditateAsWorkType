@@ -111,7 +111,15 @@ namespace MeditateAsWorkType
                     {
                         if (cell.Standable(map))
                         {
-                            yield return cell;
+                            Thing meditationSpot = cell.GetFirstThing(map, ThingDefOf.MeditationSpot);
+                            if (meditationSpot != null)
+                            {
+                                yield return meditationSpot;
+                            }
+                            else
+                            {
+                                yield return cell;
+                            }
                         }
                     }
                 }
