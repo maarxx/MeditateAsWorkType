@@ -9,6 +9,7 @@ We're on Steam: https://steamcommunity.com/sharedfiles/filedetails/?id=232453266
 # Table of Contents
 
 * [Introduction](#introduction)
+* [Incompatibilities](#incompatibilities)
 
 # Introduction
 
@@ -22,3 +23,7 @@ You'll find two new columns in the "Work" tab:
 This lets you do things, like, have the pawn also be a Doctor, and they will automatically ping back and forth between doctoring and meditating, which is impossible using the Schedule tab method.
 
 ![Preview](./About/Preview.png)
+
+# Incompatibilities
+
+"There's an option in Common Sense called "Pawns will only meditate as much as they need" which conflicts with this mod. For anyone having issues who happens to have that mod, just disable the bottom option in the top category of Common Sense." -- Jiopaba
