@@ -26,4 +26,4 @@ This lets you do things, like, have the pawn also be a Doctor, and they will aut
 
 # Incompatibilities
 
-"There's an option in Common Sense called "Pawns will only meditate as much as they need" which conflicts with this mod. For anyone having issues who happens to have that mod, just disable the bottom option in the top category of Common Sense." -- Jiopaba
+There's an option in Common Sense called "Pawns will only meditate as much as they need" which conflicts with this mod. For anyone having issues who happens to have that mod, just disable the bottom option in the top category of Common Sense. -- Jiopaba (Thanks!)
