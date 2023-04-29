@@ -10,6 +10,7 @@ We're on Steam: https://steamcommunity.com/sharedfiles/filedetails/?id=232453266
 
 * [Introduction](#introduction)
 * [Incompatibilities](#incompatibilities)
+* [Links](#links)
 
 # Introduction
 
@@ -27,3 +28,11 @@ This lets you do things, like, have the pawn also be a Doctor, and they will aut
 # Incompatibilities
 
 There's an option in Common Sense called "Pawns will only meditate as much as they need" which conflicts with this mod. For anyone having issues who happens to have that mod, just disable the bottom option in the top category of Common Sense. -- Jiopaba (Thanks!)
+
+# Links
+
+We're on Steam: https://steamcommunity.com/sharedfiles/filedetails/?id=2324532667
+
+We're on GitHub: https://github.com/maarxx/MeditateAsWorkType
+
+For reporting bugs or requesting features, Github Issues are better than Steam Workshop Comments.
