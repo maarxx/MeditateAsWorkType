@@ -150,29 +150,26 @@ namespace MeditateAsWorkType
 
             float num = Mathf.Clamp(Mathf.Round((Event.current.mousePosition.x - (rect.x + 3f)) / (rect.width - 8f) * 20f) / 20f, 0f, 1f);
             Event current2 = Event.current;
-            if (current2.type == EventType.MouseDown && current2.button == 0 && flag)
-            {
-                selectedStrengthTarget = num;
-                draggingBar = true;
-                SoundDefOf.DragSlider.PlayOneShotOnCamera();
-                current2.Use();
-            }
-            if (current2.type == EventType.MouseDrag && current2.button == 0 && draggingBar && flag)
+            if (flag && current2.button == 0 && (current2.type == EventType.MouseDown || current2.type == EventType.MouseDrag))
             {
                 if (Mathf.Abs(num - selectedStrengthTarget) > float.Epsilon)
                 {
                     SoundDefOf.DragSlider.PlayOneShotOnCamera();
                 }
                 selectedStrengthTarget = num;
+                connection.allowableProgressPenalty = selectedStrengthTarget;
+                draggingBar = true;
                 current2.Use();
             }
-            if (current2.type == EventType.MouseUp && current2.button == 0 && draggingBar)
+            if (draggingBar && current2.button == 0 && current2.type == EventType.MouseUp)
             {
-                if (selectedStrengthTarget >= 0f)
-                {
-                    connection.allowableProgressPenalty = selectedStrengthTarget;
-                }
-                selectedStrengthTarget = -1f;
+                //if (selectedStrengthTarget >= 0f)
+                //{
+                //    connection.allowableProgressPenalty = selectedStrengthTarget;
+                //}
+                selectedStrengthTarget = num;
+                connection.allowableProgressPenalty = selectedStrengthTarget;
+                //selectedStrengthTarget = -1f;
                 draggingBar = false;
                 current2.Use();
             }
