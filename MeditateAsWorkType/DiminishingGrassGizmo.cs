@@ -15,6 +15,8 @@ namespace MeditateAsWorkType
     {
         private DiminishingGrassComp connection;
 
+        private float[] breakPoints = { 0.50f, 0.75f, 0.85f };
+
         private float selectedStrengthTarget = -1f;
 
         private bool draggingBar;
@@ -51,6 +53,20 @@ namespace MeditateAsWorkType
             Order = -100f;
         }
 
+        private float getCurrentBreakpoint()
+        {
+            float curBreak = 0.00f;
+            foreach (float breakPoint in breakPoints)
+            {
+                if (connection.allowableProgressPenalty <= breakPoint)
+                {
+                    return curBreak;
+                }
+                curBreak = breakPoint;
+            }
+            return curBreak;
+        }
+
         public override float GetWidth(float maxWidth)
         {
             return 212f;
@@ -73,7 +89,7 @@ namespace MeditateAsWorkType
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.UpperLeft;
             Widgets.Label(rect3.x, ref curY, rect3.width, "Current Progress Penalty: " + connection.currentProgressPenalty.ToStringPercent());
-            Widgets.Label(rect3.x, ref curY, rect3.width, "Allowable Progress Penalty: " + connection.allowableProgressPenalty.ToStringPercent());
+            Widgets.Label(rect3.x, ref curY, rect3.width, "Allowable Progress Penalty: " + getCurrentBreakpoint().ToStringPercent());
             Text.Font = GameFont.Small;
             if (Mouse.IsOver(rect2) && !draggingBar)
             {
@@ -136,15 +152,10 @@ namespace MeditateAsWorkType
             float connectionStrength = connection.currentProgressPenalty;
             Widgets.FillableBar(rect, connectionStrength, flag ? StrengthHighlightTex : StrengthTex, EmptyBarTex, doBorder: true);
 
-            SimpleCurve myCurve = new SimpleCurve(new CurvePoint[] {
-                new CurvePoint(0.5f, 2.4f),
-                new CurvePoint(0.75f, 3.6f),
-                new CurvePoint(0.85f, 4.2f)
-            });
-            foreach (CurvePoint point in myCurve.Points) {
-                if (point.x > 0f)
+            foreach (float point in breakPoints) {
+                if (point > 0f)
                 {
-                    DrawThreshold(rect, point.x, connectionStrength);
+                    DrawThreshold(rect, point, connectionStrength);
                 }
             }
 
@@ -163,13 +174,8 @@ namespace MeditateAsWorkType
             }
             if (draggingBar && current2.button == 0 && current2.type == EventType.MouseUp)
             {
-                //if (selectedStrengthTarget >= 0f)
-                //{
-                //    connection.allowableProgressPenalty = selectedStrengthTarget;
-                //}
                 selectedStrengthTarget = num;
                 connection.allowableProgressPenalty = selectedStrengthTarget;
-                //selectedStrengthTarget = -1f;
                 draggingBar = false;
                 current2.Use();
             }
